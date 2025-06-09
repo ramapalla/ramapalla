@@ -1,10 +1,13 @@
-- 👋 Hi, I’m @ramapalla
-- 👀 I’m interested in ...
-- 🌱 I’m currently learning ...
-- 💞️ I’m looking to collaborate on ...
-- 📫 How to reach me ...
+# 👋 Hi, I'm Rama Palla
 
-<!---
-ramapalla/ramapalla is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+🚀 **Cloud & Automation Specialist | 15+ Years in IT**
+
+### 🧰 Skills & Tools
+- ☁️ Azure | AKS | ARM | Terraform
+- ⚙️ ArgoCD | FluxCD | GitOps
+- 🐚 PowerShell | Bash
+- 📦 CI/CD: GitHub Actions | Azure DevOps
+- 📈 Monitoring: Azure Monitor | Prometheus | Grafana
+
+### 📌 Current Focus
+Designing enterprise-grade GitOps pipelines using AKS, FluxCD, and Terraform.
