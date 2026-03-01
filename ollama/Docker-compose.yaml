@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_secure
+    restart: unless-stopped
+
+    # ── Security hardening (procfs-compatible) ──────────────────
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+      - CHOWN
+      - SETUID
+      - SETGID
+
+    # ── Filesystem ──────────────────────────────────────────────
+    # read_only: true   ← REMOVED, this blocks /proc/thread-self/fd
+    volumes:
+      - ./models:/root/.ollama/models
+    tmpfs:
+      - /tmp:size=512m,mode=1777
+
+    # ── Network — localhost only ─────────────────────────────────
+    ports:
+      - "127.0.0.1:11434:11434"
+
+    # ── Resource limits ──────────────────────────────────────────
+    mem_limit: 8g
+    memswap_limit: 8g
+    cpus: "4"
+
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_KEEP_ALIVE=5m
+      - OLLAMA_MAX_LOADED_MODELS=1
+      - OLLAMA_MODELS=/root/.ollama/models
+
+    networks:
+      - ollama_net
+
+networks:
+  ollama_net:
+    driver: bridge
