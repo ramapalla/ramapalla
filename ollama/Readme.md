@@ -40,14 +40,45 @@ Perfect for developers and researchers who want to run large language models loc
    docker-compose ps
    ```
 
-4. Pull your first model (example: llama2)
+4. Pull a model
+
+   **Option A: Pull Gemma 2B (Lightweight - Recommended)**
+   ```
+   docker exec ollama_secure ollama pull gemma:2b
+   ```
+   - Size: ~1.7 GB
+   - Fast responses, ideal for testing
+   - Best for systems with limited resources
+
+   **Option B: Pull Llama2**
    ```
    docker exec ollama_secure ollama pull llama2
    ```
+   - Size: ~4 GB
+   - More capable model
+   - Requires more system resources
 
-5. Test the setup by querying the model
+5. List downloaded models
    ```
-   curl http://127.0.0.1:11434/api/generate -d '{"model": "llama2", "prompt": "Why is the sky blue?"}'
+   docker exec ollama_secure ollama list
+   ```
+   You should see output like:
+   ```
+   NAME        ID              SIZE      MODIFIED
+   gemma:2b    b50d6c999e59    1.7 GB    About a minute ago
+   ```
+
+6. Test the model interactively
+
+   **Interactive chat mode:**
+   ```
+   docker exec -it ollama_secure ollama run gemma:2b
+   ```
+   Then type your prompt and press Enter. Type `exit` to quit.
+
+7. Test via API (non-interactive)
+   ```
+   curl http://127.0.0.1:11434/api/generate -d '{"model": "gemma:2b", "prompt": "Hello, what is your name?"}'
    ```
 
 ### Stop Ollama
