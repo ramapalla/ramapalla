@@ -13,6 +13,7 @@ services:
       - ALL
     cap_add:
       - NET_BIND_SERVICE
+      - NET_RAW
       - CHOWN
       - SETUID
       - SETGID
@@ -35,9 +36,20 @@ services:
 
     environment:
       - OLLAMA_HOST=0.0.0.0
-      - OLLAMA_KEEP_ALIVE=5m
+      - OLLAMA_KEEP_ALIVE=-1
       - OLLAMA_MAX_LOADED_MODELS=1
+      - OLLAMA_NUM_PARALLEL=1
+      - OLLAMA_NUM_THREADS=10
       - OLLAMA_MODELS=/root/.ollama/models
+
+    # ── Remove model aliases on startup ──────────────────────
+    entrypoint: >
+      sh -c "
+      ollama serve &
+      sleep 10 &&
+      ollama rm claude-sonnet-4-6 || true &&
+      wait
+      "
 
     networks:
       - ollama_net

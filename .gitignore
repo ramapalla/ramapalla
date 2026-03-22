@@ -1,2 +1,5 @@
 # Ignore .github folder
 .github/
+
+# Ignore Ollama models
+ollama/models/
