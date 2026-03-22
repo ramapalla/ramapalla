@@ -92,6 +92,295 @@ http://localhost:3000
 ```
 
 
+## GitHub Authentication
+
+### Adding GitHub Credentials to Dockhand
+
+To enable pulling private Docker images or repositories from GitHub Container Registry (GHCR):
+
+#### Step 1: Generate GitHub Personal Access Token
+
+1. Go to [GitHub Settings → Developer Settings → Personal Access Tokens](https://github.com/settings/tokens)
+2. Click **Generate new token** → **Generate new token (classic)**
+3. Set the following scopes:
+   - `read:packages` - Read container packages
+   - `write:packages` - Push container packages
+   - `delete:packages` - Delete packages
+4. Copy the generated token and store it securely
+
+#### Step 2: Configure in Docker
+
+Before running Dockhand, authenticate with GHCR:
+
+```powershell
+# Login to GitHub Container Registry
+docker login ghcr.io -u YOUR_GITHUB_USERNAME -p YOUR_PERSONAL_ACCESS_TOKEN
+
+# Or use Docker credentials file
+echo YOUR_PERSONAL_ACCESS_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
+```
+
+#### Step 3: Add to Docker Compose
+
+Update your docker-compose.yaml to include registry authentication:
+
+```yaml
+services:
+  dockhand:
+    image: fnsys/dockhand:latest
+    container_name: dockhand
+    restart: unless-stopped
+    depends_on:
+      - socket-proxy
+    ports:
+      - "3000:3000"
+    volumes:
+      - dockhand_data:/app/data
+      - ~/.docker/config.json:/root/.docker/config.json:ro  # Mount Docker credentials
+    networks:
+      - socket-proxy
+      - default
+```
+
+#### Step 4: Access Private Images in Dockhand
+
+Once authenticated, you can pull private images from GitHub Container Registry:
+- Image format: `ghcr.io/your-username/your-repo:tag`
+- Dockhand will use the mounted credentials to authenticate
+
+
+## Deploying from GitHub Repositories
+
+### Pull Docker-Compose from GitHub and Deploy
+
+#### Step 1: Clone Repository Containing Docker-Compose Files
+
+```powershell
+# Clone your repository
+git clone https://github.com/ramapalla/ramapalla.git
+cd ramapalla
+```
+
+#### Step 2: Navigate to Service Directory
+
+Each service (ollama, openwebui, etc.) has its own docker-compose.yaml:
+
+```powershell
+# Example: Deploy Ollama service
+cd ollama
+```
+
+#### Step 3: Deploy Using Dockhand UI
+
+1. Open Dockhand at `http://localhost:3000`
+2. Navigate to **Services** or **Compose** section
+3. Click **New Service** or **Import Compose File**
+4. Either:
+   - Paste the contents of your docker-compose.yaml
+   - Upload/Link to the GitHub raw file URL
+5. Click **Deploy** to start the service
+
+#### Step 4: Monitor Deployment
+
+```powershell
+# From terminal
+docker compose logs -f
+
+# Or use Dockhand UI Logs tab to view output
+```
+
+#### Deploying from GitHub URL (Advanced)
+
+To deploy directly from GitHub using raw content URL:
+
+```powershell
+# Get raw docker-compose.yaml from GitHub
+curl -O https://raw.githubusercontent.com/ramapalla/ramapalla/main/ollama/Docker-compose.yaml
+
+# Deploy using Docker
+docker compose -f Docker-compose.yaml up -d
+```
+
+Or in Dockhand, use the raw URL file feature:
+- URL: `https://raw.githubusercontent.com/ramapalla/ramapalla/main/ollama/Docker-compose.yaml`
+
+
+## Docker-Compose Management in Dockhand UI
+
+### Create a New Docker-Compose Service
+
+#### Step 1: Access Compose Editor
+
+1. Open Dockhand dashboard at `http://localhost:3000`
+2. Go to **Compose** or **Services** section
+3. Click **Create New Compose File** or **New Service**
+
+#### Step 2: Define Your Service
+
+Use the visual editor or YAML editor to define services:
+
+**Example - Adding a Simple Service:**
+
+```yaml
+version: "3.8"
+services:
+  my-app:
+    image: nginx:latest
+    container_name: my-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./data:/usr/share/nginx/html
+    networks:
+      - default
+```
+
+#### Step 3: Deploy the Service
+
+1. Click **Validate** to check for syntax errors
+2. Review the configuration
+3. Click **Deploy** to start containers
+
+#### Step 4: Manage Running Services
+
+Once deployed, use Dockhand to:
+- **View logs**: Click service → **Logs** tab
+- **Restart**: Click **Restart** button
+- **Stop**: Click **Stop** to gracefully stop
+- **Remove**: Click **Remove** to delete containers
+- **Edit**: Modify configuration and redeploy
+
+### Edit Existing Docker-Compose Files
+
+#### Step 1: Locate Service in Dockhand
+
+1. Go to **Compose** → Select your service
+2. Click **Edit** or **View Configuration**
+
+#### Step 2: Modify Configuration
+
+- Add/remove services
+- Update environment variables
+- Change port mappings
+- Adjust volume mounts
+
+#### Step 3: Save and Redeploy
+
+1. Click **Save Changes**
+2. Choose **Redeploy** to apply changes
+3. Monitor the **Events** log for deployment status
+
+### View and Export Docker-Compose
+
+- Click **Export** to download the current compose configuration
+- Share with team members or commit to version control
+
+
+## Git Integration Workflow
+
+### Version Control for Docker-Compose Configurations
+
+#### Step 1: Configure Git Repository
+
+```powershell
+# Initialize git (if not already done)
+git init
+
+# Configure user identity
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+# Add remote repository
+git remote add origin https://github.com/ramapalla/ramapalla.git
+```
+
+#### Step 2: Create Service-Specific Branches
+
+For each service, create dedicated branches:
+
+```powershell
+# Feature branch for service configuration
+git checkout -b feature/service-ollama
+git checkout -b feature/service-openwebui
+```
+
+#### Step 3: Commit Docker-Compose Changes
+
+```powershell
+# After making changes in Dockhand
+git status
+git add ollama/Docker-compose.yaml
+git add openwebui/docker-compose.yaml
+git commit -m "Update: Configured ollama with memory limits and volumes"
+```
+
+#### Step 4: Push to GitHub
+
+```powershell
+# Push to your branch
+git push origin feature/service-ollama
+
+# Create Pull Request for review
+# Go to GitHub and create PR: feature/service-ollama → main
+```
+
+#### Step 5: Pull Latest Configuration from GitHub
+
+Keep your local deployment synchronized:
+
+```powershell
+# Fetch latest changes
+git fetch origin
+
+# Switch to main branch
+git checkout main
+
+# Pull latest configuration
+git pull origin main
+
+# Redeploy services with new configuration
+cd ollama
+docker compose down
+docker compose up -d
+```
+
+### Using Dockhand with Version Control
+
+**Workflow for Team Collaboration:**
+
+1. **Developer makes changes in Dockhand UI**
+2. **Export configuration** from Dockhand
+3. **Commit to Git** with meaningful message
+4. **Push to feature branch** on GitHub
+5. **Create Pull Request** for review
+6. **After approval**, merge to main
+7. **Production deployment** pulls latest from main
+
+### Sync Dockhand with Remote Repository
+
+To keep Dockhand configuration in sync with GitHub:
+
+```powershell
+# After pulling latest changes
+git pull origin main
+
+# If docker-compose changed, redeploy
+docker compose down
+docker compose up -d
+
+# Verify in Dockhand UI
+# Navigate to Services and confirm updates
+```
+
+### Best Practices for Git Integration
+
+- **Commit messages**: Use descriptive messages (e.g., "Update: Added resource limits to ollama")
+- **Branch naming**: Use `feature/`, `bugfix/`, `hotfix/` prefixes
+- **Before merging**: Test changes in Dockhand first
+- **Tag releases**: Create version tags after merge to main: `git tag -a v1.0.0 -m "Release v1.0.0"`
+
+
 ## Configuration Options
 
 ### Environment Variables
