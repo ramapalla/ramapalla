@@ -3,3 +3,6 @@
 
 # Ignore Ollama models
 ollama/models/
+ghcp_sdk/bin/
+ghcp_sdk/obj/
+
