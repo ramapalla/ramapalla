@@ -30,16 +30,15 @@ services:
       - "127.0.0.1:11434:11434"
 
     # ── Resource limits ──────────────────────────────────────────
-    mem_limit: 8g
-    memswap_limit: 8g
-    cpus: "4"
-
+    mem_limit: 10g
+    memswap_limit: 10g
+   
     environment:
       - OLLAMA_HOST=0.0.0.0
       - OLLAMA_KEEP_ALIVE=-1
       - OLLAMA_MAX_LOADED_MODELS=1
       - OLLAMA_NUM_PARALLEL=1
-      - OLLAMA_NUM_THREADS=10
+      - OLLAMA_NUM_THREADS=12
       - OLLAMA_MODELS=/root/.ollama/models
 
     # ── Remove model aliases on startup ──────────────────────

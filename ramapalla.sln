@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GHCP_SDK", "GHCP_SDK", "{A9F73C8D-1D63-7FA4-A527-FC5306794314}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OllamaQuickTest", "GHCP_SDK\OllamaQuickTest.csproj", "{F844776F-30C6-EFA2-8657-4E9CBFEE3EC4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F844776F-30C6-EFA2-8657-4E9CBFEE3EC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F844776F-30C6-EFA2-8657-4E9CBFEE3EC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F844776F-30C6-EFA2-8657-4E9CBFEE3EC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F844776F-30C6-EFA2-8657-4E9CBFEE3EC4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F844776F-30C6-EFA2-8657-4E9CBFEE3EC4} = {A9F73C8D-1D63-7FA4-A527-FC5306794314}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9AAB0AE2-D3E9-4F9E-A486-A36F0DBCC099}
+	EndGlobalSection
+EndGlobal
